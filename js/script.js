@@ -9,7 +9,7 @@ function notifyChoice(portalName) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       chat_id: TELEGRAM_CHAT_ID,
-      text: `🏠 顾顾 is on the Home Hub and clicked: ${portalName}\n⏰ Time: ${new Date().toLocaleString()}`
+      text: `🏠 顾顾 is on the Home Web and clicked: ${portalName}\n⏰ Time: ${new Date().toLocaleString()}`
     }),
     keepalive: true
   }).catch(err => console.log(err));
