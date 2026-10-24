@@ -49,3 +49,65 @@ if (canvas) {
   }
   animate();
 }
+
+/* ==========================================================
+   Background Music Toggle & Autoplay Control
+========================================================== */
+let isPlaying = true;
+
+function updateMusicUI(playing) {
+  const btn = document.getElementById('music-toggle-btn');
+  const icon = document.getElementById('music-icon');
+  const text = document.getElementById('music-text');
+
+  if (!btn || !icon || !text) return;
+
+  if (playing) {
+    btn.classList.add('playing');
+    icon.textContent = '🎶';
+    text.textContent = 'Mute';
+  } else {
+    btn.classList.remove('playing');
+    icon.textContent = '🎵';
+    text.textContent = 'Play';
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const audio = document.getElementById('bg-audio');
+  if (!audio) return;
+
+  audio.play().then(() => {
+    isPlaying = true;
+    updateMusicUI(true);
+  }).catch(() => {
+    // Browser က Autoplay ပိတ်ထားလျှင် ပထမဆုံး click နှိပ်ချိန်တွင် အလိုအလျောက် ဖွင့်ပေးမည်
+    isPlaying = false;
+    updateMusicUI(false);
+
+    document.addEventListener('click', function startOnFirstTap(e) {
+      if (e.target.closest('#music-toggle-btn')) return;
+      audio.play().then(() => {
+        isPlaying = true;
+        updateMusicUI(true);
+      }).catch(err => console.log(err));
+      document.removeEventListener('click', startOnFirstTap);
+    }, { once: true });
+  });
+});
+
+function toggleMusic() {
+  const audio = document.getElementById('bg-audio');
+  if (!audio) return;
+
+  if (!isPlaying) {
+    audio.play().then(() => {
+      isPlaying = true;
+      updateMusicUI(true);
+    }).catch(err => console.log("Audio play error:", err));
+  } else {
+    audio.pause();
+    isPlaying = false;
+    updateMusicUI(false);
+  }
+}
