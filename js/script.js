@@ -1,4 +1,93 @@
-/* Telegram Bot Notification when she picks a portal on Home Hub */
+/* ==========================================================
+   1. Procedural Audio Synthesizer (Exact guguletter engine)
+========================================================== */
+class ProceduralAudio {
+  constructor() {
+    this.ctx = null;
+    this.isPlaying = false;
+    this.timer = null;
+    this.step = 0;
+    this.score = [
+      261.63, 329.63, 392.00, 523.25, 440.00, 392.00, 329.63, 293.66, 349.23, 440.00, 523.25
+    ];
+  }
+
+  init() {
+    if (!this.ctx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      this.ctx = new AudioContext();
+    }
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  }
+
+  playNote(freq) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, now);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.12, now + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.4);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 1.4);
+  }
+
+  start() {
+    this.init();
+    if (this.isPlaying) return;
+    this.isPlaying = true;
+    this.step = 0;
+    const musicText = document.getElementById('music-text');
+    if (musicText) musicText.textContent = 'Mute';
+    this.loop();
+  }
+
+  loop() {
+    if (!this.isPlaying) return;
+    this.playNote(this.score[this.step % this.score.length]);
+    this.step++;
+    this.timer = setTimeout(() => this.loop(), 640);
+  }
+
+  stop() {
+    this.isPlaying = false;
+    if (this.timer) clearTimeout(this.timer);
+    const musicText = document.getElementById('music-text');
+    if (musicText) musicText.textContent = 'Play Music';
+  }
+
+  toggle() {
+    if (this.isPlaying) this.stop();
+    else this.start();
+  }
+}
+
+const audio = new ProceduralAudio();
+const musicToggle = document.getElementById('music-toggle');
+
+if (musicToggle) {
+  musicToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    audio.toggle();
+  });
+}
+
+// Start chimes on first tap anywhere on the page
+document.addEventListener('click', () => {
+  if (!audio.isPlaying) {
+    audio.start();
+  }
+}, { once: true });
+
+/* ==========================================================
+   2. Telegram Bot Notification when she picks a portal
+========================================================== */
 const TELEGRAM_BOT_TOKEN = "8832112215:AAGga3nuyOUKmOcTPjLs1FcU8zS9Rf7QCrc";
 const TELEGRAM_CHAT_ID = "1694644020";
 
@@ -15,7 +104,9 @@ function notifyChoice(portalName) {
   }).catch(err => console.log(err));
 }
 
-/* Soft Floating Sparkles Background */
+/* ==========================================================
+   3. Soft Floating Sparkles Background
+========================================================== */
 const canvas = document.getElementById('sparkles-canvas');
 if (canvas) {
   const ctx = canvas.getContext('2d');
@@ -48,66 +139,4 @@ if (canvas) {
     requestAnimationFrame(animate);
   }
   animate();
-}
-
-/* ==========================================================
-   Background Music Toggle & Autoplay Control
-========================================================== */
-let isPlaying = true;
-
-function updateMusicUI(playing) {
-  const btn = document.getElementById('music-toggle-btn');
-  const icon = document.getElementById('music-icon');
-  const text = document.getElementById('music-text');
-
-  if (!btn || !icon || !text) return;
-
-  if (playing) {
-    btn.classList.add('playing');
-    icon.textContent = '🎶';
-    text.textContent = 'Mute';
-  } else {
-    btn.classList.remove('playing');
-    icon.textContent = '🎵';
-    text.textContent = 'Play';
-  }
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  const audio = document.getElementById('bg-audio');
-  if (!audio) return;
-
-  audio.play().then(() => {
-    isPlaying = true;
-    updateMusicUI(true);
-  }).catch(() => {
-    // Browser က Autoplay ပိတ်ထားလျှင် ပထမဆုံး click နှိပ်ချိန်တွင် အလိုအလျောက် ဖွင့်ပေးမည်
-    isPlaying = false;
-    updateMusicUI(false);
-
-    document.addEventListener('click', function startOnFirstTap(e) {
-      if (e.target.closest('#music-toggle-btn')) return;
-      audio.play().then(() => {
-        isPlaying = true;
-        updateMusicUI(true);
-      }).catch(err => console.log(err));
-      document.removeEventListener('click', startOnFirstTap);
-    }, { once: true });
-  });
-});
-
-function toggleMusic() {
-  const audio = document.getElementById('bg-audio');
-  if (!audio) return;
-
-  if (!isPlaying) {
-    audio.play().then(() => {
-      isPlaying = true;
-      updateMusicUI(true);
-    }).catch(err => console.log("Audio play error:", err));
-  } else {
-    audio.pause();
-    isPlaying = false;
-    updateMusicUI(false);
-  }
 }
