@@ -164,3 +164,34 @@ h1 {
   background: linear-gradient(135deg, #F59E0B, #D97706);
   box-shadow: 0 4px 14px rgba(217, 119, 6, 0.28);
 }
+
+/* Coming Soon Portal Cards */
+.card-coming-soon {
+  border-color: #E2E8F0;
+  background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+  opacity: 0.85;
+  cursor: default;
+}
+
+.card-coming-soon:hover {
+  transform: none;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04);
+}
+
+.soon-tag {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: #64748B;
+  color: white;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.btn-locked {
+  background: #94A3B8;
+  box-shadow: none;
+  cursor: not-allowed;
+}
