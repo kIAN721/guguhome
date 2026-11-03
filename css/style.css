@@ -1,3 +1,6 @@
+/* ==========================================================
+   1. GLOBAL RESET & BASE STYLES
+========================================================== */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -19,6 +22,7 @@ body {
   position: relative;
 }
 
+/* Floating Sparkles Background Canvas */
 #sparkles-canvas {
   position: fixed;
   inset: 0;
@@ -28,7 +32,9 @@ body {
   z-index: 1;
 }
 
-/* Sound Button */
+/* ==========================================================
+   2. FLOATING SOUND TOGGLE BUTTON
+========================================================== */
 .music-btn {
   position: fixed;
   top: 16px;
@@ -53,6 +59,9 @@ body {
   background: #FFE4E6;
 }
 
+/* ==========================================================
+   3. HUB HEADER & CONTAINER LAYOUT
+========================================================== */
 .container {
   position: relative;
   z-index: 10;
@@ -89,6 +98,9 @@ h1 {
   margin-bottom: 34px;
 }
 
+/* ==========================================================
+   4. PORTAL GRID & INTERACTIVE CARDS
+========================================================== */
 .portal-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -99,6 +111,14 @@ h1 {
 @media (min-width: 540px) {
   .portal-grid {
     grid-template-columns: 1fr 1fr;
+  }
+
+  /* Center the 3rd card (Christmas & New Year) on wider screens */
+  .portal-grid > .card-coming-soon:last-child {
+    grid-column: 1 / -1;
+    max-width: 280px;
+    margin: 0 auto;
+    width: 100%;
   }
 }
 
@@ -121,6 +141,7 @@ h1 {
   transform: translateY(-6px);
 }
 
+/* Letter Portal Card */
 .card-letter {
   border-color: #F9CBD2;
   background: linear-gradient(180deg, #FFF5F6 0%, #FFFFFF 100%);
@@ -130,6 +151,7 @@ h1 {
   box-shadow: 0 16px 36px rgba(225, 29, 72, 0.16);
 }
 
+/* Thadingyut Portal Card */
 .card-thadingyut {
   border-color: #FDE68A;
   background: linear-gradient(180deg, #FFFBEB 0%, #FFFFFF 100%);
@@ -190,7 +212,7 @@ h1 {
   box-shadow: 0 4px 14px rgba(217, 119, 6, 0.28);
 }
 
-/* Coming Soon Portal Cards */
+/* Coming Soon Locked Card */
 .card-coming-soon {
   border-color: #E2E8F0;
   background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);

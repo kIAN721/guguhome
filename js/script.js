@@ -1,5 +1,5 @@
 /* ==========================================================
-   1. Procedural Audio Synthesizer (Exact guguletter engine)
+   1. PROCEDURAL AUDIO SYNTHESIZER (Exact guguletter engine)
 ========================================================== */
 class ProceduralAudio {
   constructor() {
@@ -86,7 +86,7 @@ document.addEventListener('click', () => {
 }, { once: true });
 
 /* ==========================================================
-   2. Telegram Bot Notification when she picks a portal
+   2. TELEGRAM BOT NOTIFICATION WHEN SHE PICKS A PORTAL
 ========================================================== */
 const TELEGRAM_BOT_TOKEN = "8832112215:AAGga3nuyOUKmOcTPjLs1FcU8zS9Rf7QCrc";
 const TELEGRAM_CHAT_ID = "1694644020";
@@ -105,7 +105,7 @@ function notifyChoice(portalName) {
 }
 
 /* ==========================================================
-   3. Soft Floating Sparkles Background
+   3. SOFT FLOATING SPARKLES BACKGROUND CANVAS
 ========================================================== */
 const canvas = document.getElementById('sparkles-canvas');
 if (canvas) {
