@@ -1,5 +1,5 @@
 /* ==========================================================
-   1. PROCEDURAL AUDIO SYNTHESIZER (Exact guguletter engine)
+   1. PROCEDURAL AUDIO SYNTHESIZER
 ========================================================== */
 class ProceduralAudio {
   constructor() {
@@ -139,4 +139,87 @@ if (canvas) {
     requestAnimationFrame(animate);
   }
   animate();
+}
+
+/* ==========================================================
+   4. BIRTHDAY SURPRISE LOCK & PASSWORD CONTROLLER
+========================================================== */
+const IS_BIRTHDAY_READY = false;
+const BIRTHDAY_PASSWORDS = ["072103", "210703", "030721", "032107", "0721", "2107", "20030721"];
+const BIRTHDAY_WEB_URL = "https://kian721.github.io/gugubirthday/";
+
+function openBirthdayModal() {
+  const modal = document.getElementById('bday-modal');
+  const icon = document.getElementById('bday-modal-icon');
+  const title = document.getElementById('bday-modal-title');
+  const desc = document.getElementById('bday-modal-desc');
+  const passSection = document.getElementById('bday-pass-section');
+  const lockedOkBtn = document.getElementById('bday-locked-ok-btn');
+  const passInput = document.getElementById('bday-pass-input');
+  const errorMsg = document.getElementById('bday-error-msg');
+
+  if (!modal) return;
+
+  if (!IS_BIRTHDAY_READY) {
+    icon.textContent = '🎂🔒';
+    title.textContent = 'Not Unlocked Yet! 🤪';
+    desc.textContent = 'ဒါက ကုကုမွေးနေ့ရောက်မှ ဖွင့်လို့ရမှာနော်! ခုတော့ ခဏစောင့်ပါဦးဗျာ 🎂✨';
+    passSection.style.display = 'none';
+    lockedOkBtn.style.display = 'block';
+    notifyChoice('🎂 Birthday Card (Tried to peek while Locked 🔒)');
+  } else {
+    icon.textContent = '🎂🔐';
+    title.textContent = 'Happy Birthday, 顾顾! 🥺🎂';
+    desc.textContent = 'ဒီလက်ဆောင်လေးကိုဖွင့်ဖို့ ကုကုရဲ့ မွေးနေ့ဂဏန်းလေးကို Password အဖြစ် ရိုက်ထည့်လိုက်နော် 👇✨';
+    passSection.style.display = 'flex';
+    lockedOkBtn.style.display = 'none';
+    if (errorMsg) errorMsg.textContent = '';
+    if (passInput) {
+      passInput.value = '';
+      setTimeout(() => passInput.focus(), 150);
+    }
+    notifyChoice('🎂 Birthday Card (Opened Password Prompt 🔐)');
+  }
+
+  modal.classList.add('active');
+}
+
+function closeBirthdayModal(e) {
+  if (!e || e.target.id === 'bday-modal') {
+    const modal = document.getElementById('bday-modal');
+    if (modal) modal.classList.remove('active');
+  }
+}
+
+function verifyBirthdayPassword() {
+  const passInput = document.getElementById('bday-pass-input');
+  const errorMsg = document.getElementById('bday-error-msg');
+  if (!passInput) return;
+
+  const cleanedInput = passInput.value.trim().replace(/[\s\/\-\.]/g, '');
+
+  if (BIRTHDAY_PASSWORDS.includes(cleanedInput)) {
+    errorMsg.style.color = '#16A34A';
+    errorMsg.textContent = '✨ Password မှန်ပါတယ်! ဝင်နေပါပြီနော်... 🎂💖';
+    notifyChoice(`🎂🎉 UNLOCKED Birthday Web with password: ${cleanedInput}`);
+
+    setTimeout(() => {
+      window.location.href = BIRTHDAY_WEB_URL;
+    }, 650);
+  } else {
+    errorMsg.style.color = '#E11D48';
+    errorMsg.textContent = 'ဟိတ် မွေးနေ့ Password မမှန်သေးဘူးနော်! ပြန်စမ်းကြည့်ပါဦး 🥺🌸';
+    passInput.classList.remove('shake');
+    void passInput.offsetWidth;
+    passInput.classList.add('shake');
+    notifyChoice(`🎂❌ Typed wrong Birthday Password: "${passInput.value}"`);
+  }
+}
+
+// Allow pressing "Enter" key inside the password box
+const bdayInputEl = document.getElementById('bday-pass-input');
+if (bdayInputEl) {
+  bdayInputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') verifyBirthdayPassword();
+  });
 }

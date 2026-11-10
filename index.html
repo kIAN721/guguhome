@@ -51,6 +51,56 @@
         <p>ဒါကတော့နောက်မှပေါ့ ခုမရသေးပါဘူးဗျာ🤪 ❄️⛄</p>
         <span class="portal-btn btn-locked">Locked 🔒</span>
       </div>
+
+      <!-- Choice 4: Coming Soon - Chinese New Year (Locked) -->
+      <div class="portal-card card-coming-soon">
+        <span class="soon-tag">🧧 Coming Soon</span>
+        <div class="portal-icon">🧧</div>
+        <h2>Chinese New Year</h2>
+        <p>တရုတ်နှစ်သစ်ကူးလည်းလာဦးမယ်နော် ဟီးဟီး 🧧✨</p>
+        <span class="portal-btn btn-locked">Locked 🔒</span>
+      </div>
+
+      <!-- Choice 5: Birthday Special (Locked + Password Protected) -->
+      <div class="portal-card card-birthday" onclick="openBirthdayModal()">
+        <span id="bday-card-tag" class="bday-tag">🎂 July Special 🔒</span>
+        <div class="portal-icon">🎂♋️</div>
+        <h2>Birthday Surprise</h2>
+        <p>July Cancer လေးကုကုအတွက်ပါ 🙄🎂🎈</p>
+        <span id="bday-card-btn" class="portal-btn btn-bday">Password Locked 🔐</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================
+       BIRTHDAY PASSWORD & LOCK MODAL
+  =========================================================== -->
+  <div id="bday-modal" class="bday-modal-overlay" onclick="closeBirthdayModal(event)">
+    <div class="bday-modal-card" onclick="event.stopPropagation()">
+      <button type="button" class="bday-close-btn" onclick="closeBirthdayModal()">✕</button>
+      <div id="bday-modal-icon" class="bday-modal-icon">🎂🔐</div>
+      <h3 id="bday-modal-title">Birthday Secret Box ✨</h3>
+      <p id="bday-modal-desc" class="bday-modal-desc"></p>
+
+      <!-- Password Form -->
+      <div id="bday-pass-section" class="bday-pass-section">
+        <input
+          type="text"
+          id="bday-pass-input"
+          class="bday-pass-input"
+          placeholder="Enter your birthday (e.g. 0715)"
+          autocomplete="off"
+        >
+        <p id="bday-error-msg" class="bday-error-msg"></p>
+        <button type="button" class="bday-unlock-btn" onclick="verifyBirthdayPassword()">
+          Unlock Birthday Surprise 🎂✨
+        </button>
+      </div>
+
+      <!-- Early Peek Close Button -->
+      <button type="button" id="bday-locked-ok-btn" class="bday-unlock-btn" onclick="closeBirthdayModal()" style="display: none;">
+        ဟုတ်ပါပြီ မွေးနေ့ရောက်မှပဲ လာကြည့်တော့မယ်နော် 🥺🤍
+      </button>
     </div>
   </div>
 
