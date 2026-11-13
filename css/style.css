@@ -1,6 +1,14 @@
 /* ==========================================================
-   1. GLOBAL RESET & BASE STYLES
+   1. GLOBAL RESET & DYNAMIC AURA BACKGROUND
 ========================================================== */
+:root {
+  --aura-top: #FFE4EC;
+  --aura-mid: #FFF5F7;
+  --aura-glow: rgba(225, 29, 72, 0.14);
+  --dock-accent: #E11D48;
+  --dock-bg: #FFE4E6;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -9,17 +17,35 @@
 
 body {
   min-height: 100vh;
-  background: radial-gradient(circle at 50% 20%, #FFE9ED 0%, #FFF8EE 55%, #FFFDF9 100%);
+  background: radial-gradient(circle at 50% 18%, var(--aura-top) 0%, var(--aura-mid) 52%, #FFFDF9 100%);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #332729;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 16px;
+  padding: 28px 14px 24px;
   text-align: center;
   overflow-x: hidden;
   position: relative;
+  transition: background 0.6s ease;
+}
+
+/* Ambient Soft Glowing Orb Behind Carousel */
+body::before {
+  content: "";
+  position: fixed;
+  top: 22%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: var(--aura-glow);
+  filter: blur(65px);
+  pointer-events: none;
+  z-index: 0;
+  transition: background 0.6s ease;
 }
 
 /* Floating Sparkles Background Canvas */
@@ -60,104 +86,222 @@ body {
 }
 
 /* ==========================================================
-   3. HUB HEADER & CONTAINER LAYOUT
+   3. HUB HEADER, CHECKLIST STAMP & EMOJI DOCK
 ========================================================== */
 .container {
   position: relative;
   z-index: 10;
-  max-width: 680px;
+  max-width: 760px;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+/* Top Row: Hub Badge + Bobbing Strawberry Matcha Stamp */
+.header-top-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
 .hub-badge {
-  background: #FFE4E6;
-  color: #E11D48;
+  background: var(--dock-bg);
+  color: var(--dock-accent);
   font-size: 12px;
   font-weight: 700;
-  padding: 6px 16px;
+  padding: 6px 15px;
   border-radius: 999px;
-  margin-bottom: 14px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* Interactive Strawberry-Matcha Checklist Stamp (Option C) */
+.checklist-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  background: linear-gradient(135deg, #FFF0F3 0%, #ECFDF5 100%);
+  border: 1.5px dashed #F43F5E;
+   outline: 2px solid #A7F3D0;
+  padding: 5px 13px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #15803D;
+  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.14);
+  transform: rotate(-2deg);
+  animation: stampBob 3s ease-in-out infinite;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.checklist-stamp:hover {
+  transform: rotate(0deg) scale(1.06);
+  box-shadow: 0 6px 16px rgba(21, 128, 61, 0.2);
+}
+
+@keyframes stampBob {
+  0%, 100% { transform: rotate(-2deg) translateY(0); }
+  50% { transform: rotate(1.5deg) translateY(-3px); }
 }
 
 h1 {
   font-family: Georgia, serif;
-  font-size: 2.1rem;
+  font-size: 2rem;
   color: #1F1617;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .subtitle {
-  font-size: 14px;
+  font-size: 13.5px;
   color: #796668;
   max-width: 420px;
-  line-height: 1.85;
-  margin-bottom: 34px;
+  line-height: 1.75;
+  margin-bottom: 18px;
+}
+
+/* Emoji Quick-Jump Dock */
+.emoji-dock {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(10px);
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  margin-bottom: 18px;
+}
+
+.dock-btn {
+  border: none;
+  background: transparent;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dock-btn:hover {
+  transform: translateY(-2px) scale(1.1);
+}
+
+.dock-btn.active {
+  background: var(--dock-bg);
+  box-shadow: 0 4px 12px var(--aura-glow);
+  transform: scale(1.18);
 }
 
 /* ==========================================================
-   4. PORTAL GRID & INTERACTIVE CARDS (Responsive Grid Layout)
+   4. 3D SWIPEABLE PORTAL CAROUSEL & CUSTOM CARD THEMES
 ========================================================== */
-.portal-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
+.carousel-stage {
+  position: relative;
   width: 100%;
+  height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1100px;
+  user-select: none;
+  touch-action: pan-y;
 }
 
-@media (min-width: 580px) {
-  .portal-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+.portal-carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
 }
 
 .portal-card {
+  position: absolute;
+  width: min(80vw, 330px);
+  min-height: 325px;
   background: #FFFFFF;
-  border-radius: 24px;
-  padding: 30px 22px;
+  border-radius: 26px;
+  padding: 28px 22px 24px;
   text-decoration: none;
   color: inherit;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   align-items: center;
   border: 2px solid transparent;
-  position: relative;
+  cursor: pointer;
+  transition: transform 0.48s cubic-bezier(0.25, 1, 0.5, 1),
+              opacity 0.45s ease,
+              box-shadow 0.35s ease,
+              filter 0.45s ease;
 }
 
-.portal-card:hover {
-  transform: translateY(-6px);
+/* 3D Deck Positions (Controlled by JS) */
+.portal-card.is-active {
+  transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
+  opacity: 1;
+  z-index: 20;
+  filter: blur(0px);
 }
 
-/* Letter Portal Card */
-.card-letter {
-  border-color: #F9CBD2;
-  background: linear-gradient(180deg, #FFF5F6 0%, #FFFFFF 100%);
+.portal-card.is-prev {
+  transform: translate3d(-62%, 6px, -110px) scale(0.86) rotateY(16deg);
+  opacity: 0.68;
+  z-index: 12;
+  filter: blur(0.4px);
 }
 
-.card-letter:hover {
-  box-shadow: 0 16px 36px rgba(225, 29, 72, 0.16);
+.portal-card.is-next {
+  transform: translate3d(62%, 6px, -110px) scale(0.86) rotateY(-16deg);
+  opacity: 0.68;
+  z-index: 12;
+  filter: blur(0.4px);
 }
 
-/* Thadingyut Portal Card */
-.card-thadingyut {
-  border-color: #FDE68A;
-  background: linear-gradient(180deg, #FFFBEB 0%, #FFFFFF 100%);
+.portal-card.is-far-prev {
+  transform: translate3d(-98%, 16px, -210px) scale(0.74) rotateY(24deg);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
 }
 
-.card-thadingyut:hover {
-  box-shadow: 0 16px 36px rgba(245, 158, 11, 0.22);
+.portal-card.is-far-next {
+  transform: translate3d(98%, 16px, -210px) scale(0.74) rotateY(-24deg);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
 }
 
-.new-tag {
+/* Shake Animation for Locked Cards */
+.portal-card.card-shake {
+  animation: lockedCardShake 0.45s ease;
+}
+
+@keyframes lockedCardShake {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  20% { transform: translate3d(-9px, 0, 0) scale(1) rotate(-2deg); }
+  40% { transform: translate3d(9px, 0, 0) scale(1) rotate(2deg); }
+  60% { transform: translate3d(-6px, 0, 0) scale(1) rotate(-1deg); }
+  80% { transform: translate3d(6px, 0, 0) scale(1) rotate(1deg); }
+}
+
+/* Shared Card Elements */
+.card-tag {
   position: absolute;
   top: 14px;
   right: 14px;
-  background: linear-gradient(135deg, #F59E0B, #D97706);
   color: white;
   font-size: 10.5px;
   font-weight: 700;
@@ -166,8 +310,8 @@ h1 {
 }
 
 .portal-icon {
-  font-size: 50px;
-  margin-bottom: 14px;
+  font-size: 48px;
+  margin-bottom: 12px;
 }
 
 .portal-card h2 {
@@ -179,245 +323,150 @@ h1 {
 
 .portal-card p {
   font-size: 13px;
-  color: #796668;
-  line-height: 1.85;
-  margin-bottom: 22px;
+  color: #6E5A5D;
+  line-height: 1.8;
+  margin-bottom: 20px;
 }
 
 .portal-btn {
   margin-top: auto;
-  padding: 11px 24px;
+  padding: 11px 22px;
   border-radius: 999px;
   font-size: 13.5px;
   font-weight: 700;
   color: white;
   width: 100%;
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
+.portal-card.is-active:hover .portal-btn {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+/* Theme 0: Letter Portal Card (Rose Pink) */
+.card-letter {
+  border-color: #F9CBD2;
+  background: linear-gradient(180deg, #FFF5F6 0%, #FFFFFF 100%);
+}
+.card-letter.is-active {
+  box-shadow: 0 18px 40px rgba(225, 29, 72, 0.16);
+}
 .btn-pink {
-  background: #E11D48;
+  background: linear-gradient(135deg, #F43F5E, #E11D48);
   box-shadow: 0 4px 14px rgba(225, 29, 72, 0.25);
 }
 
-.btn-gold {
+/* Theme 1: Thadingyut Portal Card (Warm Lantern Gold) */
+.card-thadingyut {
+  border-color: #FDE68A;
+  background: linear-gradient(180deg, #FFFBEB 0%, #FFFFFF 100%);
+}
+.card-thadingyut.is-active {
+  box-shadow: 0 18px 40px rgba(245, 158, 11, 0.20);
+}
+.tag-gold, .btn-gold {
   background: linear-gradient(135deg, #F59E0B, #D97706);
-  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.28);
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.25);
 }
 
-/* Coming Soon Locked Card */
-.card-coming-soon {
-  border-color: #E2E8F0;
-  background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
-  opacity: 0.85;
-  cursor: default;
+/* Theme 2: Christmas & New Year Card (Winter Mint & Emerald) */
+.card-christmas {
+  border-color: #A7F3D0;
+  background: linear-gradient(180deg, #ECFDF5 0%, #FFFFFF 100%);
+}
+.card-christmas.is-active {
+  box-shadow: 0 18px 40px rgba(16, 185, 129, 0.18);
+}
+.tag-mint, .btn-mint {
+  background: linear-gradient(135deg, #10B981, #059669);
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.24);
 }
 
-.card-coming-soon:hover {
-  transform: none;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04);
+/* Theme 3: Chinese New Year Card (Lucky Crimson & Peach Gold) */
+.card-cny {
+  border-color: #FECACA;
+  background: linear-gradient(180deg, #FEF2F2 0%, #FFFBEB 100%);
+}
+.card-cny.is-active {
+  box-shadow: 0 18px 40px rgba(239, 68, 68, 0.18);
+}
+.tag-crimson, .btn-crimson {
+  background: linear-gradient(135deg, #EF4444, #DC2626);
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.25);
 }
 
-.soon-tag {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  background: #64748B;
-  color: white;
-  font-size: 10.5px;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 999px;
+/* Theme 4: Thingyan Festival Card (Cool Water Aqua & Padauk) */
+.card-thingyan {
+  border-color: #BAE6FD;
+  background: linear-gradient(180deg, #F0F9FF 0%, #FEFCE8 100%);
+}
+.card-thingyan.is-active {
+  box-shadow: 0 18px 40px rgba(6, 182, 212, 0.18);
+}
+.tag-aqua, .btn-aqua {
+  background: linear-gradient(135deg, #06B6D4, #0284C7);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
 }
 
-.btn-locked {
-  background: #94A3B8;
-  box-shadow: none;
-  cursor: not-allowed;
-}
-
-/* Birthday Special Card (Password Protected) */
+/* Theme 5: Birthday Surprise Card (Dreamy Cancer Lavender) */
 .card-birthday {
   border-color: #F5D0FE;
   background: linear-gradient(180deg, #FDF4FF 0%, #FFFFFF 100%);
-  cursor: pointer;
-  grid-column: 1 / -1;
-  max-width: 400px;
-  margin: 0 auto;
-  width: 100%;
 }
-
-.card-birthday:hover {
-  box-shadow: 0 16px 36px rgba(192, 38, 211, 0.16);
+.card-birthday.is-active {
+  box-shadow: 0 18px 40px rgba(192, 38, 211, 0.18);
 }
-
-.bday-tag {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  background: linear-gradient(135deg, #D946EF, #A21CAF);
-  color: white;
-  font-size: 10.5px;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 999px;
-}
-
-.btn-bday {
+.tag-bday, .btn-bday {
   background: linear-gradient(135deg, #D946EF, #9333EA);
   box-shadow: 0 4px 14px rgba(168, 85, 247, 0.28);
 }
 
-/* ==========================================================
-   5. BIRTHDAY PASSWORD & LOCK MODAL
-========================================================== */
-.bday-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(24, 10, 28, 0.65);
-  backdrop-filter: blur(8px);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-.bday-modal-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.bday-modal-card {
-  position: relative;
-  background: #FFFFFF;
-  border: 2px solid #F5D0FE;
-  border-radius: 26px;
-  padding: 32px 24px 26px;
-  max-width: 390px;
-  width: 100%;
-  text-align: center;
-  box-shadow: 0 22px 48px rgba(147, 51, 234, 0.25);
-  transform: scale(0.92) translateY(10px);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.bday-modal-overlay.active .bday-modal-card {
-  transform: scale(1) translateY(0);
-}
-
-.bday-close-btn {
+/* Left / Right Navigation Arrows */
+.carousel-nav {
   position: absolute;
-  top: 12px;
-  right: 14px;
-  background: #FDF4FF;
-  color: #A21CAF;
-  border: 1px solid #F5D0FE;
-  width: 32px;
-  height: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  font-size: 13px;
-  font-weight: bold;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(6px);
+  color: #332729;
+  font-size: 24px;
+  line-height: 1;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s, background 0.2s;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.bday-close-btn:hover {
-  background: #FAE8FF;
-  transform: scale(1.08);
+.carousel-nav:hover {
+  background: #FFFFFF;
+  transform: translateY(-50%) scale(1.1);
 }
 
-.bday-modal-icon {
-  font-size: 46px;
-  margin-bottom: 10px;
+.prev-btn {
+  left: 4px;
 }
 
-.bday-modal-card h3 {
-  font-family: Georgia, serif;
-  font-size: 21px;
-  color: #1F1617;
-  margin-bottom: 8px;
+.next-btn {
+  right: 4px;
 }
 
-.bday-modal-desc {
-  font-size: 13.5px;
-  color: #645356;
-  line-height: 1.8;
-  margin-bottom: 18px;
+@media (min-width: 640px) {
+  .prev-btn { left: 40px; }
+  .next-btn { right: 40px; }
 }
 
-.bday-pass-section {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.bday-pass-input {
-  width: 100%;
-  padding: 13px 16px;
-  border: 2px solid #F0ABFC;
-  border-radius: 14px;
-  font-size: 15px;
-  font-weight: 700;
-  text-align: center;
-  color: #4A044E;
-  background: #FDF4FF;
-  outline: none;
-  letter-spacing: 1.5px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.bday-pass-input:focus {
-  border-color: #C026D3;
-  box-shadow: 0 0 0 4px rgba(217, 70, 239, 0.15);
-}
-
-.bday-pass-input.shake {
-  animation: inputShake 0.4s ease;
-  border-color: #E11D48;
-  background: #FFF1F2;
-}
-
-@keyframes inputShake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-7px); }
-  50% { transform: translateX(7px); }
-  75% { transform: translateX(-5px); }
-}
-
-.bday-error-msg {
-  font-size: 12.5px;
-  color: #E11D48;
+.carousel-hint {
+  margin-top: 12px;
+  font-size: 12px;
   font-weight: 600;
-  min-height: 18px;
-  line-height: 1.5;
-}
-
-.bday-unlock-btn {
-  width: 100%;
-  padding: 13px 20px;
-  border: none;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #D946EF 0%, #9333EA 100%);
-  color: #FFFFFF;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.5;
-  cursor: pointer;
-  box-shadow: 0 6px 18px rgba(168, 85, 247, 0.35);
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-
-.bday-unlock-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(168, 85, 247, 0.45);
-}
-
-.bday-unlock-btn:active {
-  transform: scale(0.96);
+  color: #8C777A;
+  letter-spacing: 0.3px;
 }

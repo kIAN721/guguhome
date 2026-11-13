@@ -19,90 +19,97 @@
   </button>
 
   <!-- ==========================================================
-       MAIN HUB CONTAINER & PORTAL CARDS
+       MAIN HUB CONTAINER & 3D PORTAL CAROUSEL
   =========================================================== -->
   <div class="container">
-    <span class="hub-badge">✨ A Little World Made For You ✨</span>
+    <!-- Header Row with Hub Badge & Bobbing Checklist Stamp -->
+    <div class="header-top-row">
+      <span class="hub-badge">✨ A Little World Made For You ✨</span>
+      <a href="https://kian721.github.io/guguchecklist/" class="checklist-stamp" onclick="notifyChoice('🍓 Checklist Web 🍵')">
+        <span class="stamp-icon">🍓📋</span>
+        <span class="stamp-text">Checklist စစ်မယ် 🍵</span>
+      </a>
+    </div>
+
     <h1>Welcome, 顾顾 🥺💖</h1>
     <p class="subtitle">ဒါက Home Page ပါ၊ ကုကုကြည့်ချင်တဲ့ဟာကို ရွေးပြီးဝင်ကြည့်လို့ရပါတယ်ဗျ 🌸🏮</p>
 
-    <div class="portal-grid">
-      <!-- Choice 1: Letter Web -->
-      <a href="https://kian721.github.io/guguletter/" class="portal-card card-letter" onclick="notifyChoice('💌 Letter Web')">
-        <div class="portal-icon">💌</div>
-        <h2>A Letter For You</h2>
-        <p>ကုကု စိတ်ညစ်တဲ့အချိန် ဖတ်ဖို့ စာ၊ ဒါမှမဟုတ် သီချင်းလေးနားထောင်ချင်ရင် ဒါကိုရွေးလိုက်နော် 📸🎶</p>
-        <span class="portal-btn btn-pink">Open Letter 🌸</span>
-      </a>
-
-      <!-- Choice 2: Thadingyut Web -->
-      <a href="https://kian721.github.io/guguthadingyut/" class="portal-card card-thadingyut" onclick="notifyChoice('🏮 Thadingyut Festival Web')">
-        <span class="new-tag">🏮 Festival Special</span>
-        <div class="portal-icon">🏮</div>
-        <h2>Thadingyut Festival</h2>
-        <p>ကုကုအတွက်သီးသန့် သီတင်းကျွတ်ပွဲတော်လေးပေါ့ 🕯️✨</p>
-        <span class="portal-btn btn-gold">Enter Festival 🏮</span>
-      </a>
-
-      <!-- Choice 3: Coming Soon - Christmas & New Year -->
-      <div class="portal-card card-coming-soon">
-        <span class="soon-tag">🎄 Coming Soon</span>
-        <div class="portal-icon">🎁</div>
-        <h2>Christmas & New Year</h2>
-        <p>ဒါကတော့နောက်မှပေါ့ ခုမရသေးပါဘူးဗျာ🤪 ❄️⛄</p>
-        <span class="portal-btn btn-locked">Locked 🔒</span>
-      </div>
-
-      <!-- Choice 4: Coming Soon - Chinese New Year (Locked) -->
-      <div class="portal-card card-coming-soon">
-        <span class="soon-tag">🧧 Coming Soon</span>
-        <div class="portal-icon">🧧</div>
-        <h2>Chinese New Year</h2>
-        <p>တရုတ်နှစ်သစ်ကူးလည်းလာဦးမယ်နော် ဟီးဟီး 🧧✨</p>
-        <span class="portal-btn btn-locked">Locked 🔒</span>
-      </div>
-
-      <!-- Choice 5: Birthday Special (Locked + Password Protected) -->
-      <div class="portal-card card-birthday" onclick="openBirthdayModal()">
-        <span id="bday-card-tag" class="bday-tag">🎂 July Special 🔒</span>
-        <div class="portal-icon">🎂♋️</div>
-        <h2>Birthday Surprise</h2>
-        <p>July Cancer လေးကုကုအတွက်ပါ 🙄🎂🎈</p>
-        <span id="bday-card-btn" class="portal-btn btn-bday">Password Locked 🔐</span>
-      </div>
+    <!-- Emoji Quick-Jump Dock -->
+    <div class="emoji-dock" id="emoji-dock">
+      <button type="button" class="dock-btn active" onclick="goToSlide(0)" aria-label="Letter">💌</button>
+      <button type="button" class="dock-btn" onclick="goToSlide(1)" aria-label="Thadingyut">🏮</button>
+      <button type="button" class="dock-btn" onclick="goToSlide(2)" aria-label="Christmas">🎄</button>
+      <button type="button" class="dock-btn" onclick="goToSlide(3)" aria-label="Chinese New Year">🧧</button>
+      <button type="button" class="dock-btn" onclick="goToSlide(4)" aria-label="Thingyan">💦</button>
+      <button type="button" class="dock-btn" onclick="goToSlide(5)" aria-label="Birthday">🎂</button>
     </div>
-  </div>
 
-  <!-- ==========================================================
-       BIRTHDAY PASSWORD & LOCK MODAL
-  =========================================================== -->
-  <div id="bday-modal" class="bday-modal-overlay" onclick="closeBirthdayModal(event)">
-    <div class="bday-modal-card" onclick="event.stopPropagation()">
-      <button type="button" class="bday-close-btn" onclick="closeBirthdayModal()">✕</button>
-      <div id="bday-modal-icon" class="bday-modal-icon">🎂🔐</div>
-      <h3 id="bday-modal-title">Birthday Secret Box ✨</h3>
-      <p id="bday-modal-desc" class="bday-modal-desc"></p>
+    <!-- 3D Swipeable Card Deck Stage -->
+    <div class="carousel-stage" id="carousel-stage">
+      <!-- Previous Slide Arrow -->
+      <button type="button" class="carousel-nav prev-btn" onclick="changeSlide(-1)" aria-label="Previous Card">‹</button>
 
-      <!-- Password Form -->
-      <div id="bday-pass-section" class="bday-pass-section">
-        <input
-          type="text"
-          id="bday-pass-input"
-          class="bday-pass-input"
-          placeholder="Enter your birthday (e.g. 0715)"
-          autocomplete="off"
-        >
-        <p id="bday-error-msg" class="bday-error-msg"></p>
-        <button type="button" class="bday-unlock-btn" onclick="verifyBirthdayPassword()">
-          Unlock Birthday Surprise 🎂✨
-        </button>
+      <div class="portal-carousel" id="portal-carousel">
+        <!-- Choice 0: Letter Web -->
+        <a href="https://kian721.github.io/guguletter/" class="portal-card card-letter" data-index="0" onclick="handleCardClick(event, 0, '💌 Letter Web')">
+          <div class="portal-icon">💌</div>
+          <h2>A Letter For You</h2>
+          <p>ကုကု စိတ်ညစ်တဲ့အချိန် ဖတ်ဖို့ စာ၊ ဒါမှမဟုတ် သီချင်းလေးနားထောင်ချင်ရင် ဒါကိုရွေးလိုက်နော် 📸🎶</p>
+          <span class="portal-btn btn-pink">Open Letter 🌸</span>
+        </a>
+
+        <!-- Choice 1: Thadingyut Web -->
+        <a href="https://kian721.github.io/guguthadingyut/" class="portal-card card-thadingyut" data-index="1" onclick="handleCardClick(event, 1, '🏮 Thadingyut Festival Web')">
+          <span class="card-tag tag-gold">🏮 Festival Special</span>
+          <div class="portal-icon">🏮</div>
+          <h2>Thadingyut Festival</h2>
+          <p>ကုကုအတွက်သီးသန့် သီတင်းကျွတ်ပွဲတော်လေးပေါ့ 🕯️✨</p>
+          <span class="portal-btn btn-gold">Enter Festival 🏮</span>
+        </a>
+
+        <!-- Choice 2: Coming Soon - Christmas & New Year -->
+        <div class="portal-card card-christmas" data-index="2" onclick="handleLockedCard(event, 2, '🎄 Christmas & New Year (Locked)')">
+          <span class="card-tag tag-mint">🎄 Coming Soon</span>
+          <div class="portal-icon">🎁</div>
+          <h2>Christmas & New Year</h2>
+          <p>ဒါကတော့နောက်မှပေါ့ ခုမရသေးပါဘူးဗျာ🤪 ❄️⛄</p>
+          <span class="portal-btn btn-mint">Locked 🔒</span>
+        </div>
+
+        <!-- Choice 3: Coming Soon - Chinese New Year -->
+        <div class="portal-card card-cny" data-index="3" onclick="handleLockedCard(event, 3, '🧧 Chinese New Year (Locked)')">
+          <span class="card-tag tag-crimson">🧧 Coming Soon</span>
+          <div class="portal-icon">🧧</div>
+          <h2>Chinese New Year</h2>
+          <p>တရုတ်နှစ်သစ်ကူးလည်းလာဦးမယ်နော် ဟီးဟီး 🧧✨</p>
+          <span class="portal-btn btn-crimson">Locked 🔒</span>
+        </div>
+
+        <!-- Choice 4: Coming Soon - Thingyan Festival -->
+        <div class="portal-card card-thingyan" data-index="4" onclick="handleLockedCard(event, 4, '💦 Thingyan Festival (Locked)')">
+          <span class="card-tag tag-aqua">💦 Coming Soon</span>
+          <div class="portal-icon">💦🌸</div>
+          <h2>Thingyan Festival</h2>
+          <p>Happy Thingyan Festival</p>
+          <span class="portal-btn btn-aqua">Locked 🔒</span>
+        </div>
+
+        <!-- Choice 5: Birthday Special (Locked + Password Protected) -->
+        <div class="portal-card card-birthday" data-index="5" onclick="handleBirthdayCard(event, 5)">
+          <span id="bday-card-tag" class="card-tag tag-bday">🎂 July Special 🔒</span>
+          <div class="portal-icon">🎂♋️</div>
+          <h2>Birthday Surprise</h2>
+          <p>July Cancer လေးကုကုအတွက်ပါ 🙄🎂🎈</p>
+          <span id="bday-card-btn" class="portal-btn btn-bday">Password Locked 🔐</span>
+        </div>
       </div>
 
-      <!-- Early Peek Close Button -->
-      <button type="button" id="bday-locked-ok-btn" class="bday-unlock-btn" onclick="closeBirthdayModal()" style="display: none;">
-        ဟုတ်ပါပြီ မွေးနေ့ရောက်မှပဲ လာကြည့်တော့မယ်နော် 🥺🤍
-      </button>
+      <!-- Next Slide Arrow -->
+      <button type="button" class="carousel-nav next-btn" onclick="changeSlide(1)" aria-label="Next Card">›</button>
     </div>
+
+    <!-- Subtle Swipe / Tap Counter Hint -->
+    <p class="carousel-hint" id="carousel-hint">✨ Swipe cards or tap emojis above (1 / 6) ✨</p>
   </div>
 
   <script src="js/script.js"></script>
