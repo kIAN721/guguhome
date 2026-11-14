@@ -337,27 +337,78 @@ function handleBirthdayCard(e, index) {
   openBirthdayModal();
 }
 
-// Touch / Swipe & Mouse Drag Support on the 3D Stage
+// Touch / Swipe & Live Drag Support (Prevents Telegram Webview Swipe-Exit)
 const stageEl = document.getElementById('carousel-stage');
 let startX = 0;
+let startY = 0;
+let currentDeltaX = 0;
 let isDragging = false;
+let isHorizontalSwipe = null;
 
 if (stageEl) {
   stageEl.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
     startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    currentDeltaX = 0;
     isDragging = true;
+    isHorizontalSwipe = null;
+
+    const activeCard = cards[currentSlide];
+    if (activeCard) activeCard.classList.add('is-dragging');
   }, { passive: true });
 
-  stageEl.addEventListener('touchend', (e) => {
+  // Non-passive touchmove intercepts horizontal swipes so Telegram doesn't exit the page
+  stageEl.addEventListener('touchmove', (e) => {
+    if (!isDragging || e.touches.length !== 1) return;
+
+    const moveX = e.touches[0].clientX;
+    const moveY = e.touches[0].clientY;
+    const deltaX = moveX - startX;
+    const deltaY = moveY - startY;
+
+    // Lock direction on first movement
+    if (isHorizontalSwipe === null && (Math.abs(deltaX) > 6 || Math.abs(deltaY) > 6)) {
+      isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY);
+    }
+
+    if (isHorizontalSwipe) {
+      // Stop Telegram / mobile browser from triggering Back / Close webview gesture
+      if (e.cancelable) e.preventDefault();
+      currentDeltaX = deltaX;
+
+      // Smoothly move and tilt the active card with the user's thumb
+      const activeCard = cards[currentSlide];
+      if (activeCard) {
+        const clampedX = Math.max(-130, Math.min(130, deltaX * 0.65));
+        const rotateDeg = clampedX * -0.08;
+        activeCard.style.transform = `translate3d(${clampedX}px, 0, 0) scale(0.98) rotateY(${rotateDeg}deg)`;
+      }
+    }
+  }, { passive: false });
+
+  const finishSwipe = () => {
     if (!isDragging) return;
     isDragging = false;
-    const endX = e.changedTouches[0].clientX;
-    const diffX = endX - startX;
-    if (Math.abs(diffX) > 40) {
-      if (diffX < 0) changeSlide(1);
+
+    const activeCard = cards[currentSlide];
+    if (activeCard) {
+      activeCard.classList.remove('is-dragging');
+      activeCard.style.transform = '';
+    }
+
+    // Trigger slide change if swiped more than 32px horizontally
+    if (isHorizontalSwipe && Math.abs(currentDeltaX) > 32) {
+      if (currentDeltaX < 0) changeSlide(1);
       else changeSlide(-1);
     }
-  }, { passive: true });
+
+    currentDeltaX = 0;
+    isHorizontalSwipe = null;
+  };
+
+  stageEl.addEventListener('touchend', finishSwipe, { passive: true });
+  stageEl.addEventListener('touchcancel', finishSwipe, { passive: true });
 
   // Keyboard Left/Right Arrow Support for Desktop
   document.addEventListener('keydown', (e) => {

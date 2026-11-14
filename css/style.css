@@ -15,6 +15,10 @@
   padding: 0;
 }
 
+html, body {
+  overscroll-behavior-x: none;
+}
+
 body {
   min-height: 100vh;
   background: radial-gradient(circle at 50% 18%, var(--aura-top) 0%, var(--aura-mid) 52%, #FFFDF9 100%);
@@ -214,6 +218,8 @@ h1 {
   justify-content: center;
   perspective: 1100px;
   user-select: none;
+  -webkit-user-select: none;
+  /* Allow vertical page scroll, but let JS intercept horizontal swipes for Telegram */
   touch-action: pan-y;
 }
 
@@ -242,43 +248,47 @@ h1 {
   align-items: center;
   border: 2px solid transparent;
   cursor: pointer;
-  transition: transform 0.48s cubic-bezier(0.25, 1, 0.5, 1),
-              opacity 0.45s ease,
-              box-shadow 0.35s ease,
-              filter 0.45s ease;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.38s ease,
+              box-shadow 0.35s ease;
 }
 
-/* 3D Deck Positions (Controlled by JS) */
+/* Disable transition during live finger dragging so card follows thumb instantly */
+.portal-card.is-dragging {
+  transition: none !important;
+}
+
+/* 3D Deck Positions (Controlled by JS - No GPU-heavy blur) */
 .portal-card.is-active {
   transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
   opacity: 1;
   z-index: 20;
-  filter: blur(0px);
 }
 
 .portal-card.is-prev {
-  transform: translate3d(-62%, 6px, -110px) scale(0.86) rotateY(16deg);
-  opacity: 0.68;
+  transform: translate3d(-58%, 6px, -95px) scale(0.86) rotateY(14deg);
+  opacity: 0.65;
   z-index: 12;
-  filter: blur(0.4px);
 }
 
 .portal-card.is-next {
-  transform: translate3d(62%, 6px, -110px) scale(0.86) rotateY(-16deg);
-  opacity: 0.68;
+  transform: translate3d(58%, 6px, -95px) scale(0.86) rotateY(-14deg);
+  opacity: 0.65;
   z-index: 12;
-  filter: blur(0.4px);
 }
 
 .portal-card.is-far-prev {
-  transform: translate3d(-98%, 16px, -210px) scale(0.74) rotateY(24deg);
+  transform: translate3d(-92%, 14px, -180px) scale(0.74) rotateY(20deg);
   opacity: 0;
   pointer-events: none;
   z-index: 5;
 }
 
 .portal-card.is-far-next {
-  transform: translate3d(98%, 16px, -210px) scale(0.74) rotateY(-24deg);
+  transform: translate3d(92%, 14px, -180px) scale(0.74) rotateY(-20deg);
   opacity: 0;
   pointer-events: none;
   z-index: 5;
