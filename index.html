@@ -34,14 +34,15 @@
     <h1>Welcome, 顾顾 🥺💖</h1>
     <p class="subtitle">ဒါက Home Page ပါ၊ ကုကုကြည့်ချင်တဲ့ဟာကို ရွေးပြီးဝင်ကြည့်လို့ရပါတယ်ဗျ 🌸🏮</p>
 
-    <!-- Emoji Quick-Jump Dock -->
+    <!-- Emoji Quick-Jump Dock (7 Items) -->
     <div class="emoji-dock" id="emoji-dock">
       <button type="button" class="dock-btn active" onclick="goToSlide(0)" aria-label="Letter">💌</button>
       <button type="button" class="dock-btn" onclick="goToSlide(1)" aria-label="Thadingyut">🏮</button>
       <button type="button" class="dock-btn" onclick="goToSlide(2)" aria-label="Christmas">🎄</button>
-      <button type="button" class="dock-btn" onclick="goToSlide(3)" aria-label="Chinese New Year">🧧</button>
-      <button type="button" class="dock-btn" onclick="goToSlide(4)" aria-label="Thingyan">💦</button>
-      <button type="button" class="dock-btn" onclick="goToSlide(5)" aria-label="Birthday">🎂</button>
+      <button type="button" class="dock-btn" onclick="goToSlide(3)" aria-label="New Year">🎆</button>
+      <button type="button" class="dock-btn" onclick="goToSlide(4)" aria-label="Chinese New Year">🧧</button>
+      <button type="button" class="dock-btn" onclick="goToSlide(5)" aria-label="Thingyan">💦</button>
+      <button type="button" class="dock-btn" onclick="goToSlide(6)" aria-label="Birthday">🎂</button>
     </div>
 
     <!-- 3D Swipeable Card Deck Stage -->
@@ -67,17 +68,26 @@
           <span class="portal-btn btn-gold">Enter Festival 🏮</span>
         </a>
 
-        <!-- Choice 2: Coming Soon - Christmas & New Year -->
-        <a href="https://kian721.github.io/gugunewyear/" id="card-newyear" class="portal-card card-christmas" data-index="2" onclick="handleFestivalCard(event, 2, 'newyear')">
-          <span id="tag-newyear" class="card-tag tag-mint">🎄 Coming Soon</span>
-          <div class="portal-icon">🎁</div>
-          <h2>Christmas & New Year</h2>
-          <p>ဒါကတော့နောက်မှပေါ့ ခုမရသေးပါဘူးဗျာ🤪 ❄️⛄</p>
-          <span id="btn-newyear" class="portal-btn btn-mint">Locked 🔒</span>
+        <!-- Choice 2: Christmas Card -->
+        <a href="https://kian721.github.io/gugunewyear/?tab=christmas" id="card-christmas" class="portal-card card-christmas" data-index="2" onclick="handleFestivalCard(event, 2, 'christmas')">
+          <span id="tag-christmas" class="card-tag tag-mint">🎄 Coming Soon</span>
+          <div class="portal-icon">🎄</div>
+          <h2>Merry Christmas</h2>
+          <p>Christmas လေးပါနော် 🎁❄️</p>
+          <span id="btn-christmas" class="portal-btn btn-mint">Locked 🔒</span>
         </a>
 
-        <!-- Choice 3: Coming Soon - Chinese New Year -->
-        <a href="https://kian721.github.io/gugucny/" id="card-cny" class="portal-card card-cny" data-index="3" onclick="handleFestivalCard(event, 3, 'cny')">
+        <!-- Choice 3: New Year Card -->
+        <a href="https://kian721.github.io/gugunewyear/?tab=newyear" id="card-newyear" class="portal-card card-newyear" data-index="3" onclick="handleFestivalCard(event, 3, 'newyear')">
+          <span id="tag-newyear" class="card-tag tag-ny">🎆 Coming Soon</span>
+          <div class="portal-icon">🎆</div>
+          <h2>New Year 2027</h2>
+          <p>New Year လည်းရှိသေးပါ့ 🌟🥂</p>
+          <span id="btn-newyear" class="portal-btn btn-ny">Locked 🔒</span>
+        </a>
+
+        <!-- Choice 4: Chinese New Year -->
+        <a href="https://kian721.github.io/gugucny/" id="card-cny" class="portal-card card-cny" data-index="4" onclick="handleFestivalCard(event, 4, 'cny')">
           <span id="tag-cny" class="card-tag tag-crimson">🧧 Coming Soon</span>
           <div class="portal-icon">🧧</div>
           <h2>Chinese New Year</h2>
@@ -85,17 +95,17 @@
           <span id="btn-cny" class="portal-btn btn-crimson">Locked 🔒</span>
         </a>
 
-        <!-- Choice 4: Coming Soon - Thingyan Festival -->
-        <a href="https://kian721.github.io/guguthingyan/" id="card-thingyan" class="portal-card card-thingyan" data-index="4" onclick="handleFestivalCard(event, 4, 'thingyan')">
+        <!-- Choice 5: Thingyan Festival -->
+        <a href="https://kian721.github.io/guguthingyan/" id="card-thingyan" class="portal-card card-thingyan" data-index="5" onclick="handleFestivalCard(event, 5, 'thingyan')">
           <span id="tag-thingyan" class="card-tag tag-aqua">💦 Coming Soon</span>
           <div class="portal-icon">💦🌸</div>
           <h2>Thingyan Festival</h2>
-          <p>Happy Thingyan Festival</p>
+          <p>မြန်မာနှစ်ကူးသင်္ကြန်လေးပေါ့ဟီးးး</p>
           <span id="btn-thingyan" class="portal-btn btn-aqua">Locked 🔒</span>
         </a>
 
-        <!-- Choice 5: Birthday Special (Locked + Password Protected) -->
-        <div class="portal-card card-birthday" data-index="5" onclick="handleBirthdayCard(event, 5)">
+        <!-- Choice 6: Birthday Special -->
+        <div class="portal-card card-birthday" data-index="6" onclick="handleBirthdayCard(event, 6)">
           <span id="bday-card-tag" class="card-tag tag-bday">🎂 July Special 🔒</span>
           <div class="portal-icon">🎂♋️</div>
           <h2>Birthday Surprise</h2>
@@ -109,7 +119,7 @@
     </div>
 
     <!-- Subtle Swipe / Tap Counter Hint -->
-    <p class="carousel-hint" id="carousel-hint">✨ Swipe cards or tap emojis above (1 / 6) ✨</p>
+    <p class="carousel-hint" id="carousel-hint">✨ Swipe cards or tap emojis above (1 / 7) ✨</p>
   </div>
 
   <!-- ==========================================================

@@ -78,7 +78,6 @@ if (musicToggle) {
   });
 }
 
-// Start chimes on first tap anywhere on the page
 document.addEventListener('click', () => {
   if (!audio.isPlaying) {
     audio.start();
@@ -120,7 +119,6 @@ if (canvas) {
     h = canvas.height = window.innerHeight;
   });
 
-  // Create twinkling 4-point stars and soft bokeh particles
   const stars = Array.from({ length: 26 }, (_, i) => ({
     x: Math.random() * w,
     y: Math.random() * h,
@@ -186,45 +184,23 @@ if (canvas) {
 }
 
 /* ==========================================================
-   3B. 3D CAROUSEL & DYNAMIC AURA CONTROLLER
+   3B. 3D CAROUSEL & DYNAMIC AURA CONTROLLER (7 Themes)
 ========================================================== */
 const AURA_THEMES = [
-  // 0: Letter (Rose Pink)
-  {
-    top: '#FFE4EC', mid: '#FFF5F7', glow: 'rgba(225, 29, 72, 0.16)',
-    accent: '#E11D48', bg: '#FFE4E6',
-    sparkles: ['rgba(225, 29, 72, 0.28)', 'rgba(251, 113, 133, 0.24)']
-  },
-  // 1: Thadingyut (Lantern Gold)
-  {
-    top: '#FEF3C7', mid: '#FFFBEB', glow: 'rgba(245, 158, 11, 0.18)',
-    accent: '#D97706', bg: '#FEF3C7',
-    sparkles: ['rgba(245, 158, 11, 0.32)', 'rgba(217, 119, 6, 0.24)']
-  },
-  // 2: Christmas & New Year (Winter Mint)
-  {
-    top: '#D1FAE5', mid: '#F0FDF4', glow: 'rgba(16, 185, 129, 0.16)',
-    accent: '#059669', bg: '#D1FAE5',
-    sparkles: ['rgba(16, 185, 129, 0.28)', 'rgba(239, 68, 68, 0.22)']
-  },
-  // 3: Chinese New Year (Crimson & Peach Gold)
-  {
-    top: '#FEE2E2', mid: '#FFFBEB', glow: 'rgba(239, 68, 68, 0.16)',
-    accent: '#DC2626', bg: '#FEE2E2',
-    sparkles: ['rgba(239, 68, 68, 0.28)', 'rgba(245, 158, 11, 0.28)']
-  },
-  // 4: Thingyan Festival (Cool Water Aqua & Padauk)
-  {
-    top: '#E0F2FE', mid: '#F0F9FF', glow: 'rgba(6, 182, 212, 0.16)',
-    accent: '#0284C7', bg: '#E0F2FE',
-    sparkles: ['rgba(6, 182, 212, 0.28)', 'rgba(250, 204, 21, 0.28)']
-  },
-  // 5: Birthday Surprise (Dreamy Cancer Lavender)
-  {
-    top: '#FAE8FF', mid: '#FDF4FF', glow: 'rgba(192, 38, 211, 0.17)',
-    accent: '#9333EA', bg: '#FAE8FF',
-    sparkles: ['rgba(192, 38, 211, 0.28)', 'rgba(147, 51, 234, 0.24)']
-  }
+  // 0: Letter (Rose Pink)[cite: 2]
+  { top: '#FFE4EC', mid: '#FFF5F7', glow: 'rgba(225, 29, 72, 0.16)', accent: '#E11D48', bg: '#FFE4E6', sparkles: ['rgba(225, 29, 72, 0.28)', 'rgba(251, 113, 133, 0.24)'] },
+  // 1: Thadingyut (Lantern Gold)[cite: 2]
+  { top: '#FEF3C7', mid: '#FFFBEB', glow: 'rgba(245, 158, 11, 0.18)', accent: '#D97706', bg: '#FEF3C7', sparkles: ['rgba(245, 158, 11, 0.32)', 'rgba(217, 119, 6, 0.24)'] },
+  // 2: Christmas (Winter Mint)
+  { top: '#D1FAE5', mid: '#F0FDF4', glow: 'rgba(16, 185, 129, 0.16)', accent: '#059669', bg: '#D1FAE5', sparkles: ['rgba(16, 185, 129, 0.28)', 'rgba(239, 68, 68, 0.22)'] },
+  // 3: New Year (Midnight Gold)
+  { top: '#312E81', mid: '#1E1B4B', glow: 'rgba(245, 158, 11, 0.22)', accent: '#F59E0B', bg: '#312E81', sparkles: ['rgba(245, 158, 11, 0.35)', 'rgba(253, 230, 138, 0.3)'] },
+  // 4: Chinese New Year (Crimson & Peach Gold)
+  { top: '#FEE2E2', mid: '#FFFBEB', glow: 'rgba(239, 68, 68, 0.16)', accent: '#DC2626', bg: '#FEE2E2', sparkles: ['rgba(239, 68, 68, 0.28)', 'rgba(245, 158, 11, 0.28)'] },
+  // 5: Thingyan Festival (Cool Water Aqua & Padauk)
+  { top: '#E0F2FE', mid: '#F0F9FF', glow: 'rgba(6, 182, 212, 0.16)', accent: '#0284C7', bg: '#E0F2FE', sparkles: ['rgba(6, 182, 212, 0.28)', 'rgba(250, 204, 21, 0.28)'] },
+  // 6: Birthday Surprise (Dreamy Cancer Lavender)[cite: 2]
+  { top: '#FAE8FF', mid: '#FDF4FF', glow: 'rgba(192, 38, 211, 0.17)', accent: '#9333EA', bg: '#FAE8FF', sparkles: ['rgba(192, 38, 211, 0.28)', 'rgba(147, 51, 234, 0.24)'] }
 ];
 
 let currentSlide = 0;
@@ -239,7 +215,6 @@ function updateCarousel() {
   cards.forEach((card, index) => {
     card.classList.remove('is-active', 'is-prev', 'is-next', 'is-far-prev', 'is-far-next');
 
-    // Calculate circular shortest distance around the 6-card deck
     let diff = index - currentSlide;
     if (diff > total / 2) diff -= total;
     if (diff < -total / 2) diff += total;
@@ -257,17 +232,14 @@ function updateCarousel() {
     }
   });
 
-  // Update active state on the Emoji Dock
   dockBtns.forEach((btn, idx) => {
     btn.classList.toggle('active', idx === currentSlide);
   });
 
-  // Update slide counter text
   if (hintEl) {
     hintEl.textContent = `✨ Swipe cards or tap emojis above (${currentSlide + 1} / ${total}) ✨`;
   }
 
-  // Shift background aura & sparkle colors to match the active card
   const theme = AURA_THEMES[currentSlide] || AURA_THEMES[0];
   const root = document.documentElement;
   root.style.setProperty('--aura-top', theme.top);
@@ -288,7 +260,6 @@ function changeSlide(step) {
   goToSlide(currentSlide + step);
 }
 
-// Handle clicking an unlocked link card (Letter & Thadingyut)
 function handleCardClick(e, index, portalName) {
   if (currentSlide !== index) {
     e.preventDefault();
@@ -298,7 +269,7 @@ function handleCardClick(e, index, portalName) {
   notifyChoice(portalName);
 }
 
-// Touch / Swipe & Live Drag Support (Prevents Telegram Webview Swipe-Exit)
+/* Touch & Drag Handling */
 const stageEl = document.getElementById('carousel-stage');
 let startX = 0;
 let startY = 0;
@@ -319,7 +290,6 @@ if (stageEl) {
     if (activeCard) activeCard.classList.add('is-dragging');
   }, { passive: true });
 
-  // Non-passive touchmove intercepts horizontal swipes so Telegram doesn't exit the page
   stageEl.addEventListener('touchmove', (e) => {
     if (!isDragging || e.touches.length !== 1) return;
 
@@ -328,17 +298,14 @@ if (stageEl) {
     const deltaX = moveX - startX;
     const deltaY = moveY - startY;
 
-    // Lock direction on first movement
     if (isHorizontalSwipe === null && (Math.abs(deltaX) > 6 || Math.abs(deltaY) > 6)) {
       isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY);
     }
 
     if (isHorizontalSwipe) {
-      // Stop Telegram / mobile browser from triggering Back / Close webview gesture
       if (e.cancelable) e.preventDefault();
       currentDeltaX = deltaX;
 
-      // Smoothly move and tilt the active card with the user's thumb
       const activeCard = cards[currentSlide];
       if (activeCard) {
         const clampedX = Math.max(-130, Math.min(130, deltaX * 0.65));
@@ -358,7 +325,6 @@ if (stageEl) {
       activeCard.style.transform = '';
     }
 
-    // Trigger slide change if swiped more than 32px horizontally
     if (isHorizontalSwipe && Math.abs(currentDeltaX) > 32) {
       if (currentDeltaX < 0) changeSlide(1);
       else changeSlide(-1);
@@ -371,7 +337,6 @@ if (stageEl) {
   stageEl.addEventListener('touchend', finishSwipe, { passive: true });
   stageEl.addEventListener('touchcancel', finishSwipe, { passive: true });
 
-  // Keyboard Left/Right Arrow Support for Desktop
   document.addEventListener('keydown', (e) => {
     const modal = document.getElementById('bday-modal');
     if (modal && modal.classList.contains('active')) return;
@@ -380,24 +345,25 @@ if (stageEl) {
   });
 }
 
-// Initialize the 3D Carousel on page load
 updateCarousel();
 
 /* ==========================================================
-   4. MASTER UNLOCK SWITCHBOARD (MANUAL + AUTO-DATE BACKUP)
+   4. MASTER UNLOCK SWITCHBOARD (SEPARATE CHRISTMAS & NEW YEAR)
 ========================================================== */
-// Change forceUnlock to true anytime to test or unlock manually,
-// OR leave as false and it will auto-unlock on the scheduled dates!
 const PORTAL_SCHEDULE = {
+  christmas: {
+    forceUnlock: false,
+    unlockDate: "2026-12-25T00:00:00",
+    name: "🎄 Merry Christmas",
+    unlockedTag: "🎄 Christmas Special",
+    unlockedBtn: "Enter Christmas 🎄✨"
+  },
   newyear: {
-    forceUnlock: false, // Set to 'christmas' or 'newyear' or true to test early
-    christmasDate: "2026-12-25T00:00:00",
-    newYearDate: "2027-01-01T00:00:00",
-    name: "🎄 Christmas & New Year",
-    christmasTag: "🎄 Christmas Special",
-    christmasBtn: "Enter Christmas 🎄✨",
-    newYearTag: "🎆 New Year Special",
-    newYearBtn: "Enter New Year 🎆✨"
+    forceUnlock: false,
+    unlockDate: "2027-01-01T00:00:00",
+    name: "🎆 New Year 2027",
+    unlockedTag: "🎆 New Year Special",
+    unlockedBtn: "Enter New Year 🎆✨"
   },
   cny: {
     forceUnlock: false,
@@ -414,7 +380,7 @@ const PORTAL_SCHEDULE = {
     unlockedBtn: "Enter Festival 💦"
   },
   birthday: {
-    forceUnlock: false, // If false, password box works now, but only redirects on/after July 21
+    forceUnlock: false,
     unlockDate: "2027-07-21T00:00:00",
     name: "🎂 Birthday Surprise",
     unlockedTag: "🎂 Happy Birthday ✨",
@@ -422,47 +388,15 @@ const PORTAL_SCHEDULE = {
   }
 };
 
-// Check stage for Christmas & New Year ('locked' | 'christmas' | 'newyear')
-function getNewYearStage() {
-  const cfg = PORTAL_SCHEDULE.newyear;
-  if (cfg.forceUnlock === 'newyear') return 'newyear';
-  if (cfg.forceUnlock === 'christmas' || cfg.forceUnlock === true) return 'christmas';
-
-  const now = new Date();
-  if (now >= new Date(cfg.newYearDate)) return 'newyear';
-  if (now >= new Date(cfg.christmasDate)) return 'christmas';
-  return 'locked';
-}
-
-// Check if a standard portal (cny, thingyan, birthday) has reached its unlock date
 function isPortalUnlocked(key) {
-  if (key === 'newyear') return getNewYearStage() !== 'locked';
   const cfg = PORTAL_SCHEDULE[key];
   if (!cfg) return false;
   if (cfg.forceUnlock) return true;
   return new Date() >= new Date(cfg.unlockDate);
 }
 
-// Update card badges and button labels automatically on page load
 function syncPortalLocksUI() {
-  // 1. Sync Christmas & New Year 2-Part Card
-  const nyStage = getNewYearStage();
-  const nyTag = document.getElementById('tag-newyear');
-  const nyBtn = document.getElementById('btn-newyear');
-  const nyCard = document.getElementById('card-newyear');
-
-  if (nyStage === 'christmas') {
-    if (nyTag) nyTag.textContent = PORTAL_SCHEDULE.newyear.christmasTag;
-    if (nyBtn) nyBtn.textContent = PORTAL_SCHEDULE.newyear.christmasBtn;
-    if (nyCard) nyCard.href = "https://kian721.github.io/gugunewyear/?part=christmas";
-  } else if (nyStage === 'newyear') {
-    if (nyTag) nyTag.textContent = PORTAL_SCHEDULE.newyear.newYearTag;
-    if (nyBtn) nyBtn.textContent = PORTAL_SCHEDULE.newyear.newYearBtn;
-    if (nyCard) nyCard.href = "https://kian721.github.io/gugunewyear/?part=newyear";
-  }
-
-  // 2. Sync CNY & Thingyan Cards
-  ['cny', 'thingyan'].forEach(key => {
+  ['christmas', 'newyear', 'cny', 'thingyan'].forEach(key => {
     if (isPortalUnlocked(key)) {
       const cfg = PORTAL_SCHEDULE[key];
       const tagEl = document.getElementById(`tag-${key}`);
@@ -472,7 +406,6 @@ function syncPortalLocksUI() {
     }
   });
 
-  // 3. Sync Birthday Card badge when July 21 arrives
   if (isPortalUnlocked('birthday')) {
     const bdayTag = document.getElementById('bday-card-tag');
     const bdayBtn = document.getElementById('bday-card-btn');
@@ -481,7 +414,6 @@ function syncPortalLocksUI() {
   }
 }
 
-// Handle clicking Christmas/New Year, CNY, or Thingyan cards
 function handleFestivalCard(e, index, key) {
   if (currentSlide !== index) {
     e.preventDefault();
@@ -491,18 +423,11 @@ function handleFestivalCard(e, index, key) {
 
   const cfg = PORTAL_SCHEDULE[key];
 
-  // If unlocked, allow link navigation and notify Telegram with exact part
   if (isPortalUnlocked(key)) {
-    if (key === 'newyear') {
-      const stage = getNewYearStage();
-      notifyChoice(`${cfg.name} (Entered ${stage.toUpperCase()} part ✨)`);
-    } else {
-      notifyChoice(`${cfg.name} (Unlocked & Entered ✨)`);
-    }
+    notifyChoice(`${cfg.name} (Unlocked & Entered ✨)`);
     return;
   }
 
-  // Otherwise block navigation, shake card, and send locked Telegram alert
   e.preventDefault();
   const card = cards[index];
   if (!card) return;
@@ -525,7 +450,6 @@ function handleFestivalCard(e, index, key) {
   notifyChoice(`${cfg.name} (Locked) — Tried to open! 🤪`);
 }
 
-// Handle clicking the Birthday card
 function handleBirthdayCard(e, index) {
   if (currentSlide !== index) {
     goToSlide(index);
@@ -535,9 +459,9 @@ function handleBirthdayCard(e, index) {
 }
 
 /* ==========================================================
-   5. BIRTHDAY PASSWORD CONTROLLER (BOX OPEN NOW, REDIRECTS ON JULY 21)
+   5. BIRTHDAY PASSWORD CONTROLLER
 ========================================================== */
-const BIRTHDAY_PASSWORDS = ["072103", "210703", "030721", "032107"];
+const BIRTHDAY_PASSWORDS = ["072103", "210703", "032107", "030721"];
 const BIRTHDAY_WEB_URL = "https://kian721.github.io/gugubirthday/";
 
 function openBirthdayModal() {
@@ -552,7 +476,6 @@ function openBirthdayModal() {
 
   if (!modal) return;
 
-  // Always show the password input box so she can try typing her birthday anytime
   icon.textContent = isPortalUnlocked('birthday') ? '🎂💖' : '🎂🔐';
   title.textContent = isPortalUnlocked('birthday')
     ? 'Happy Birthday, 顾顾! 🥺🎂'
@@ -587,7 +510,6 @@ function verifyBirthdayPassword() {
   const cleanedInput = passInput.value.trim().replace(/[\s\/\-\.]/g, '');
 
   if (BIRTHDAY_PASSWORDS.includes(cleanedInput)) {
-    // Check if July 21 has arrived (or forceUnlock is true)
     if (isPortalUnlocked('birthday')) {
       errorMsg.style.color = '#16A34A';
       errorMsg.textContent = '✨ Password is correct! You may enter... 🎂💖';
@@ -597,7 +519,6 @@ function verifyBirthdayPassword() {
         window.location.href = BIRTHDAY_WEB_URL;
       }, 650);
     } else {
-      // Password is correct, but it is not July 21 yet!
       errorMsg.style.color = '#9333EA';
       errorMsg.textContent = '✨ Password is correct! ဒါပေမယ့် ကုကုမွေးနေ့ရောက်မှ ပွင့်မှာနော် ခဏစောင့်ပါဦးဗျာ 🎂🔒💖';
       notifyChoice(`🎂🔐 Typed CORRECT Birthday Password ("${cleanedInput}"), but kept locked until July 21!`);
@@ -612,7 +533,6 @@ function verifyBirthdayPassword() {
   }
 }
 
-// Allow pressing "Enter" key inside the password box
 const bdayInputEl = document.getElementById('bday-pass-input');
 if (bdayInputEl) {
   bdayInputEl.addEventListener('keydown', (e) => {
@@ -620,5 +540,4 @@ if (bdayInputEl) {
   });
 }
 
-// Sync all card tags and buttons on page load
 syncPortalLocksUI();

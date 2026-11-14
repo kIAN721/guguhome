@@ -380,7 +380,7 @@ h1 {
   box-shadow: 0 4px 14px rgba(217, 119, 6, 0.25);
 }
 
-/* Theme 2: Christmas & New Year Card (Winter Mint & Emerald) */
+/* Theme 2: Christmas Card (Winter Mint & Emerald) */
 .card-christmas {
   border-color: #A7F3D0;
   background: linear-gradient(180deg, #ECFDF5 0%, #FFFFFF 100%);
@@ -393,7 +393,20 @@ h1 {
   box-shadow: 0 4px 14px rgba(5, 150, 105, 0.24);
 }
 
-/* Theme 3: Chinese New Year Card (Lucky Crimson & Peach Gold) */
+/* Theme 3: New Year Card (Midnight Indigo & Gold Sparkle) */
+.card-newyear {
+  border-color: #FDE68A;
+  background: linear-gradient(180deg, #1E1B4B 0%, #FFFFFF 100%);
+}
+.card-newyear.is-active {
+  box-shadow: 0 18px 40px rgba(245, 158, 11, 0.22);
+}
+.tag-ny, .btn-ny {
+  background: linear-gradient(135deg, #F59E0B, #DC2626);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+}
+
+/* Theme 4: Chinese New Year Card (Lucky Crimson & Peach Gold) */
 .card-cny {
   border-color: #FECACA;
   background: linear-gradient(180deg, #FEF2F2 0%, #FFFBEB 100%);
@@ -406,7 +419,7 @@ h1 {
   box-shadow: 0 4px 14px rgba(220, 38, 38, 0.25);
 }
 
-/* Theme 4: Thingyan Festival Card (Cool Water Aqua & Padauk) */
+/* Theme 5: Thingyan Festival Card (Cool Water Aqua & Padauk) */
 .card-thingyan {
   border-color: #BAE6FD;
   background: linear-gradient(180deg, #F0F9FF 0%, #FEFCE8 100%);
@@ -419,7 +432,7 @@ h1 {
   box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
 }
 
-/* Theme 5: Birthday Surprise Card (Dreamy Cancer Lavender) */
+/* Theme 6: Birthday Surprise Card (Dreamy Cancer Lavender) */
 .card-birthday {
   border-color: #F5D0FE;
   background: linear-gradient(180deg, #FDF4FF 0%, #FFFFFF 100%);
