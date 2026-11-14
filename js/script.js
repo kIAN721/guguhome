@@ -186,7 +186,7 @@ if (canvas) {
 }
 
 /* ==========================================================
-   3B. 3D CAROUSEL, DYNAMIC AURA & LOCKED CARD CONTROLLER
+   3B. 3D CAROUSEL & DYNAMIC AURA CONTROLLER
 ========================================================== */
 const AURA_THEMES = [
   // 0: Letter (Rose Pink)
@@ -288,7 +288,7 @@ function changeSlide(step) {
   goToSlide(currentSlide + step);
 }
 
-// Handle clicking an unlocked link card (rotates to center first if peeking from the side)
+// Handle clicking an unlocked link card (Letter & Thadingyut)
 function handleCardClick(e, index, portalName) {
   if (currentSlide !== index) {
     e.preventDefault();
@@ -296,45 +296,6 @@ function handleCardClick(e, index, portalName) {
     return;
   }
   notifyChoice(portalName);
-}
-
-// Handle clicking a locked festival card (Christmas, CNY, Thingyan)
-function handleLockedCard(e, index, portalName) {
-  if (currentSlide !== index) {
-    goToSlide(index);
-    return;
-  }
-  const card = cards[index];
-  if (!card) return;
-
-  // Trigger shake animation
-  card.classList.remove('card-shake');
-  void card.offsetWidth;
-  card.classList.add('card-shake');
-
-  // Temporarily show playful locked message on the button
-  const btn = card.querySelector('.portal-btn');
-  if (btn && !btn.dataset.locking) {
-    const originalText = btn.textContent;
-    btn.dataset.locking = 'true';
-    btn.textContent = 'Not Ready Yet 🤪🔒';
-    setTimeout(() => {
-      btn.textContent = originalText;
-      delete btn.dataset.locking;
-    }, 1400);
-  }
-
-  // Send Telegram alert
-  notifyChoice(`${portalName} — Tried to open! 🤪`);
-}
-
-// Handle clicking the Birthday card (rotates to center first if on the side)
-function handleBirthdayCard(e, index) {
-  if (currentSlide !== index) {
-    goToSlide(index);
-    return;
-  }
-  openBirthdayModal();
 }
 
 // Touch / Swipe & Live Drag Support (Prevents Telegram Webview Swipe-Exit)
@@ -423,10 +384,160 @@ if (stageEl) {
 updateCarousel();
 
 /* ==========================================================
-   4. BIRTHDAY SURPRISE LOCK & PASSWORD CONTROLLER
+   4. MASTER UNLOCK SWITCHBOARD (MANUAL + AUTO-DATE BACKUP)
 ========================================================== */
-const IS_BIRTHDAY_READY = false;
-const BIRTHDAY_PASSWORDS = ["072103", "210703", "030721", "032107", "0721", "2107", "20030721"];
+// Change forceUnlock to true anytime to test or unlock manually,
+// OR leave as false and it will auto-unlock on the scheduled dates!
+const PORTAL_SCHEDULE = {
+  newyear: {
+    forceUnlock: false, // Set to 'christmas' or 'newyear' or true to test early
+    christmasDate: "2026-12-25T00:00:00",
+    newYearDate: "2027-01-01T00:00:00",
+    name: "🎄 Christmas & New Year",
+    christmasTag: "🎄 Christmas Special",
+    christmasBtn: "Enter Christmas 🎄✨",
+    newYearTag: "🎆 New Year Special",
+    newYearBtn: "Enter New Year 🎆✨"
+  },
+  cny: {
+    forceUnlock: false,
+    unlockDate: "2027-02-05T00:00:00", // CNY Eve 2027
+    name: "🧧 Chinese New Year",
+    unlockedTag: "🧧 CNY Special",
+    unlockedBtn: "Enter Festival 🧧"
+  },
+  thingyan: {
+    forceUnlock: false,
+    unlockDate: "2027-04-13T00:00:00", // Thingyan Eve 2027
+    name: "💦 Thingyan Festival",
+    unlockedTag: "💦 Water Festival",
+    unlockedBtn: "Enter Festival 💦"
+  },
+  birthday: {
+    forceUnlock: false, // If false, password box works now, but only redirects on/after July 21
+    unlockDate: "2027-07-21T00:00:00",
+    name: "🎂 Birthday Surprise",
+    unlockedTag: "🎂 Happy Birthday ✨",
+    unlockedBtn: "Unlock Birthday 🎂💖"
+  }
+};
+
+// Check stage for Christmas & New Year ('locked' | 'christmas' | 'newyear')
+function getNewYearStage() {
+  const cfg = PORTAL_SCHEDULE.newyear;
+  if (cfg.forceUnlock === 'newyear') return 'newyear';
+  if (cfg.forceUnlock === 'christmas' || cfg.forceUnlock === true) return 'christmas';
+
+  const now = new Date();
+  if (now >= new Date(cfg.newYearDate)) return 'newyear';
+  if (now >= new Date(cfg.christmasDate)) return 'christmas';
+  return 'locked';
+}
+
+// Check if a standard portal (cny, thingyan, birthday) has reached its unlock date
+function isPortalUnlocked(key) {
+  if (key === 'newyear') return getNewYearStage() !== 'locked';
+  const cfg = PORTAL_SCHEDULE[key];
+  if (!cfg) return false;
+  if (cfg.forceUnlock) return true;
+  return new Date() >= new Date(cfg.unlockDate);
+}
+
+// Update card badges and button labels automatically on page load
+function syncPortalLocksUI() {
+  // 1. Sync Christmas & New Year 2-Part Card
+  const nyStage = getNewYearStage();
+  const nyTag = document.getElementById('tag-newyear');
+  const nyBtn = document.getElementById('btn-newyear');
+  const nyCard = document.getElementById('card-newyear');
+
+  if (nyStage === 'christmas') {
+    if (nyTag) nyTag.textContent = PORTAL_SCHEDULE.newyear.christmasTag;
+    if (nyBtn) nyBtn.textContent = PORTAL_SCHEDULE.newyear.christmasBtn;
+    if (nyCard) nyCard.href = "https://kian721.github.io/gugunewyear/?part=christmas";
+  } else if (nyStage === 'newyear') {
+    if (nyTag) nyTag.textContent = PORTAL_SCHEDULE.newyear.newYearTag;
+    if (nyBtn) nyBtn.textContent = PORTAL_SCHEDULE.newyear.newYearBtn;
+    if (nyCard) nyCard.href = "https://kian721.github.io/gugunewyear/?part=newyear";
+  }
+
+  // 2. Sync CNY & Thingyan Cards
+  ['cny', 'thingyan'].forEach(key => {
+    if (isPortalUnlocked(key)) {
+      const cfg = PORTAL_SCHEDULE[key];
+      const tagEl = document.getElementById(`tag-${key}`);
+      const btnEl = document.getElementById(`btn-${key}`);
+      if (tagEl) tagEl.textContent = cfg.unlockedTag;
+      if (btnEl) btnEl.textContent = cfg.unlockedBtn;
+    }
+  });
+
+  // 3. Sync Birthday Card badge when July 21 arrives
+  if (isPortalUnlocked('birthday')) {
+    const bdayTag = document.getElementById('bday-card-tag');
+    const bdayBtn = document.getElementById('bday-card-btn');
+    if (bdayTag) bdayTag.textContent = PORTAL_SCHEDULE.birthday.unlockedTag;
+    if (bdayBtn) bdayBtn.textContent = PORTAL_SCHEDULE.birthday.unlockedBtn;
+  }
+}
+
+// Handle clicking Christmas/New Year, CNY, or Thingyan cards
+function handleFestivalCard(e, index, key) {
+  if (currentSlide !== index) {
+    e.preventDefault();
+    goToSlide(index);
+    return;
+  }
+
+  const cfg = PORTAL_SCHEDULE[key];
+
+  // If unlocked, allow link navigation and notify Telegram with exact part
+  if (isPortalUnlocked(key)) {
+    if (key === 'newyear') {
+      const stage = getNewYearStage();
+      notifyChoice(`${cfg.name} (Entered ${stage.toUpperCase()} part ✨)`);
+    } else {
+      notifyChoice(`${cfg.name} (Unlocked & Entered ✨)`);
+    }
+    return;
+  }
+
+  // Otherwise block navigation, shake card, and send locked Telegram alert
+  e.preventDefault();
+  const card = cards[index];
+  if (!card) return;
+
+  card.classList.remove('card-shake');
+  void card.offsetWidth;
+  card.classList.add('card-shake');
+
+  const btn = card.querySelector('.portal-btn');
+  if (btn && !btn.dataset.locking) {
+    const originalText = btn.textContent;
+    btn.dataset.locking = 'true';
+    btn.textContent = 'Not Ready Yet 🤪🔒';
+    setTimeout(() => {
+      btn.textContent = originalText;
+      delete btn.dataset.locking;
+    }, 1400);
+  }
+
+  notifyChoice(`${cfg.name} (Locked) — Tried to open! 🤪`);
+}
+
+// Handle clicking the Birthday card
+function handleBirthdayCard(e, index) {
+  if (currentSlide !== index) {
+    goToSlide(index);
+    return;
+  }
+  openBirthdayModal();
+}
+
+/* ==========================================================
+   5. BIRTHDAY PASSWORD CONTROLLER (BOX OPEN NOW, REDIRECTS ON JULY 21)
+========================================================== */
+const BIRTHDAY_PASSWORDS = ["072103", "210703", "030721", "032107"];
 const BIRTHDAY_WEB_URL = "https://kian721.github.io/gugubirthday/";
 
 function openBirthdayModal() {
@@ -441,27 +552,23 @@ function openBirthdayModal() {
 
   if (!modal) return;
 
-  if (!IS_BIRTHDAY_READY) {
-    icon.textContent = '🎂🔒';
-    title.textContent = 'Not Unlocked Yet! 🤪';
-    desc.textContent = 'ဒါက ကုကုမွေးနေ့ရောက်မှ ဖွင့်လို့ရမှာနော်! ခုတော့ ခဏစောင့်ပါဦးဗျာ 🎂✨';
-    passSection.style.display = 'none';
-    lockedOkBtn.style.display = 'block';
-    notifyChoice('🎂 Birthday Card (Tried to peek while Locked 🔒)');
-  } else {
-    icon.textContent = '🎂🔐';
-    title.textContent = 'Happy Birthday, 顾顾! 🥺🎂';
-    desc.textContent = 'ဒီလက်ဆောင်လေးကိုဖွင့်ဖို့ ကုကုရဲ့ မွေးနေ့ဂဏန်းလေးကို Password အဖြစ် ရိုက်ထည့်လိုက်နော် 👇✨';
-    passSection.style.display = 'flex';
-    lockedOkBtn.style.display = 'none';
-    if (errorMsg) errorMsg.textContent = '';
-    if (passInput) {
-      passInput.value = '';
-      setTimeout(() => passInput.focus(), 150);
-    }
-    notifyChoice('🎂 Birthday Card (Opened Password Prompt 🔐)');
+  // Always show the password input box so she can try typing her birthday anytime
+  icon.textContent = isPortalUnlocked('birthday') ? '🎂💖' : '🎂🔐';
+  title.textContent = isPortalUnlocked('birthday')
+    ? 'Happy Birthday, 顾顾! 🥺🎂'
+    : 'Birthday Secret Box ✨';
+  desc.textContent = 'Enter 6 digits password to open 👇✨';
+
+  passSection.style.display = 'flex';
+  lockedOkBtn.style.display = 'none';
+
+  if (errorMsg) errorMsg.textContent = '';
+  if (passInput) {
+    passInput.value = '';
+    setTimeout(() => passInput.focus(), 150);
   }
 
+  notifyChoice('🎂 Birthday Card (Opened Password Box 🔐)');
   modal.classList.add('active');
 }
 
@@ -480,16 +587,24 @@ function verifyBirthdayPassword() {
   const cleanedInput = passInput.value.trim().replace(/[\s\/\-\.]/g, '');
 
   if (BIRTHDAY_PASSWORDS.includes(cleanedInput)) {
-    errorMsg.style.color = '#16A34A';
-    errorMsg.textContent = '✨ Password မှန်ပါတယ်! ဝင်နေပါပြီနော်... 🎂💖';
-    notifyChoice(`🎂🎉 UNLOCKED Birthday Web with password: ${cleanedInput}`);
+    // Check if July 21 has arrived (or forceUnlock is true)
+    if (isPortalUnlocked('birthday')) {
+      errorMsg.style.color = '#16A34A';
+      errorMsg.textContent = '✨ Password is correct! You may enter... 🎂💖';
+      notifyChoice(`🎂🎉 UNLOCKED & ENTERED Birthday Web with password: ${cleanedInput}`);
 
-    setTimeout(() => {
-      window.location.href = BIRTHDAY_WEB_URL;
-    }, 650);
+      setTimeout(() => {
+        window.location.href = BIRTHDAY_WEB_URL;
+      }, 650);
+    } else {
+      // Password is correct, but it is not July 21 yet!
+      errorMsg.style.color = '#9333EA';
+      errorMsg.textContent = '✨ Password is correct! ဒါပေမယ့် ကုကုမွေးနေ့ရောက်မှ ပွင့်မှာနော် ခဏစောင့်ပါဦးဗျာ 🎂🔒💖';
+      notifyChoice(`🎂🔐 Typed CORRECT Birthday Password ("${cleanedInput}"), but kept locked until July 21!`);
+    }
   } else {
     errorMsg.style.color = '#E11D48';
-    errorMsg.textContent = 'ဟိတ် မွေးနေ့ Password မမှန်သေးဘူးနော်! ပြန်စမ်းကြည့်ပါဦး 🥺🌸';
+    errorMsg.textContent = 'Password is incorrect! ပြန်စမ်းကြည့်ပါဦး 🥺🌸';
     passInput.classList.remove('shake');
     void passInput.offsetWidth;
     passInput.classList.add('shake');
@@ -504,3 +619,6 @@ if (bdayInputEl) {
     if (e.key === 'Enter') verifyBirthdayPassword();
   });
 }
+
+// Sync all card tags and buttons on page load
+syncPortalLocksUI();
