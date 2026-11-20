@@ -353,14 +353,14 @@ updateCarousel();
 const PORTAL_SCHEDULE = {
   christmas: {
     forceUnlock: false,
-    unlockDate: "2026-12-25T00:00:00",
+    unlockDate: "2026-12-20T00:00:00", // 5 days before Dec 25, 2026
     name: "🎄 Merry Christmas",
     unlockedTag: "🎄 Christmas Special",
     unlockedBtn: "Enter Christmas 🎄✨"
   },
   newyear: {
     forceUnlock: false,
-    unlockDate: "2027-01-01T00:00:00",
+    unlockDate: "2026-12-27T00:00:00", // 5 days before Jan 1, 2027
     name: "🎆 New Year 2027",
     unlockedTag: "🎆 New Year Special",
     unlockedBtn: "Enter New Year 🎆✨"
